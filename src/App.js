@@ -5,13 +5,26 @@ import { nanoid } from "nanoid";
 import Dice from "./components/Dice";
 
 function App() {
-  const [newDice, setNewDice] = useState([]);
+  const [newDice, setNewDice] = useState(allNewDice());
+  const [tenzies, setTenzies] = useState(false);
 
   useEffect(() => {
     setNewDice(allNewDice());
+    setTenzies(false);
   }, []);
 
-  const allNewDice = () => {
+  useEffect(() => {
+    const allHeld = newDice.every((dice) => dice.isHeld);
+    const firstValue = newDice[0].value;
+    const allSameValue = newDice.every((dice) => dice.value === firstValue);
+
+    if (allHeld && allSameValue) {
+      setTenzies(true);
+      console.log("You won!");
+    }
+  }, [newDice, tenzies]);
+
+  function allNewDice() {
     const randomDice = [];
     const maxNumOnDice = 6;
     for (let i = 0; i < 10; i++) {
@@ -22,7 +35,7 @@ function App() {
       });
     }
     return randomDice;
-  };
+  }
 
   const rollDice = () => {
     setNewDice((prevDice) =>
@@ -46,6 +59,11 @@ function App() {
     });
   };
 
+  const newGame = () => {
+    setNewDice(allNewDice());
+    setTenzies(false);
+  };
+
   return (
     <AppContainer>
       <Title>Tenzies</Title>
@@ -63,7 +81,11 @@ function App() {
           />
         ))}
       </DiceContainer>
-      <button onClick={rollDice}>Roll</button>
+      {tenzies ? (
+        <button onClick={newGame}>New Game</button>
+      ) : (
+        <button onClick={rollDice}>Roll</button>
+      )}
     </AppContainer>
   );
 }
