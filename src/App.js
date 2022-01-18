@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { nanoid } from "nanoid";
+import Confetti from "react-confetti";
 
 import Dice from "./components/Dice";
 
@@ -20,7 +21,6 @@ function App() {
 
     if (allHeld && allSameValue) {
       setTenzies(true);
-      console.log("You won!");
     }
   }, [newDice, tenzies]);
 
@@ -82,7 +82,10 @@ function App() {
         ))}
       </DiceContainer>
       {tenzies ? (
-        <button onClick={newGame}>New Game</button>
+        <>
+          <Confetti />
+          <button onClick={newGame}>New Game</button>
+        </>
       ) : (
         <button onClick={rollDice}>Roll</button>
       )}
